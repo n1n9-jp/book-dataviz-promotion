@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データ可視化の基本が全部わかる本: 収集・変換からビジュアライゼーション・データ分析支援まで</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            position: relative;
+            overflow: hidden;
+            min-height: auto;
+            padding: 4rem 0;
+        }
+
+        .gradient-bg svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .book-content {
+            position: relative;
+            z-index: 1;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- 1st Section: 書籍情報 -->
+    <section class="gradient-bg">
+        <svg preserveAspectRatio="none" width="100%" height="100%">
+            <defs>
+                <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="hsl(180, 50%, 95%)" />
+                    <stop offset="100%" stop-color="hsl(210, 50%, 95%)" />
+                </linearGradient>
+                <linearGradient id="gradient2" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="hsl(240, 50%, 95%)" />
+                    <stop offset="100%" stop-color="hsl(270, 50%, 95%)" />
+                </linearGradient>
+                <linearGradient id="gradient3" x1="100%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="hsl(300, 50%, 95%)" />
+                    <stop offset="100%" stop-color="hsl(330, 50%, 95%)" />
+                </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#gradient1)" opacity="0.7" />
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#gradient2)" opacity="0.7" />
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#gradient3)" opacity="0.7" />
+        </svg>
+
+        <div class="container mx-auto px-4">
+            <div class="book-content p-8">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/3">
+                        <img src="assets/book_all-about-dataviz.jpg" alt="書籍表紙" class="w-full rounded-lg shadow-lg">
+                    </div>
+                    <div class="md:w-2/3">
+                        <h1 class="text-3xl font-bold mb-4 text-gray-900">データ可視化の基本が全部わかる本: 収集・変換からビジュアライゼーション・データ分析支援まで</h1>
+                        <div class="space-y-2 text-gray-600">
+                            <p>著者：矢崎裕一</p>
+                            <p>ISBN：978-4798183688</p>
+                            <p>ページ数：352ページ</p>
+                            <p>価格：2,750円（税込）</p>
+                            <p>発売日：2024年8月28日</p>
+                        </div>
+                        <div class="mt-6 space-y-4">
+                            <div class="flex gap-4">
+                                <a href="https://amzn.to/4j0tIAJ" class="bg-black hover:bg-gray-800 text-[#F9A825] px-6 py-2 rounded-lg inline-flex items-center transition-colors duration-200">
+
+                                    Amazonで購入
+                                </a>
+                                <a href="https://amzn.to/4j88Jwc" class="bg-black hover:bg-gray-800 text-[#F9A825] px-6 py-2 rounded-lg inline-flex items-center transition-colors duration-200">
+                                    Kindleで購入
+                                </a>
+                            </div>
+                            <div class="flex flex-wrap gap-4 mt-4">
+                                <a href="https://books.rakuten.co.jp/rb/17910289/" class="text-blue-600 hover:underline transition-colors duration-200">楽天ブックス</a>
+                                <a href="https://www.kinokuniya.co.jp/f/dsg-01-9784798183688" class="text-blue-600 hover:underline transition-colors duration-200">紀伊國屋書店</a>
+                                <a href="https://honto.jp/ebook/pd-series_B-MBJ-20472-127300650-001-001.html" class="text-blue-600 hover:underline transition-colors duration-200">honto</a>
+                                <a href="https://www.yodobashi.com/product/100000009003861546/" class="text-blue-600 hover:underline transition-colors duration-200">ヨドバシ.com</a>
+                                <a href="https://shopping.yahoo.co.jp/products/0c638c943a" class="text-blue-600 hover:underline transition-colors duration-200">Yahoo!ショッピング</a>
+                                <a href="https://7net.omni7.jp/detail/1107515531" class="text-blue-600 hover:underline transition-colors duration-200">セブンネット</a>
+                                <a href="https://store-tsutaya.tsite.jp/search/item/sell_book/PTA00016Y8J9/9784798183688" class="text-blue-600 hover:underline transition-colors duration-200">TSUTAYA</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function updateGradients() {
+            const time = Date.now() * 0.001;
+            const gradients = [
+                document.querySelector('#gradient1'),
+                document.querySelector('#gradient2'),
+                document.querySelector('#gradient3')
+            ];
+
+            gradients.forEach((gradient, index) => {
+                const stops = gradient.querySelectorAll('stop');
+                const baseHue = (time * 15 + index * 120) % 360;
+                
+                stops.forEach((stop, stopIndex) => {
+                    const hue = (baseHue + stopIndex * 60) % 360;
+                    stop.setAttribute('stop-color', `hsl(${hue}, 80%, 80%)`);
+                });
+            });
+
+            requestAnimationFrame(updateGradients);
+        }
+
+        updateGradients();
+    </script>
+
+    <!-- 2nd Section: コンセプト -->
+    <section class="bg-black py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- コンセプト -->
+                <div>
+                    <h2 class="text-2xl font-bold mb-8 text-white">コンセプト</h2>
+                    <div class="space-y-8">
+                        <p class="text-gray-200 leading-8">
+                            データ可視化とは、一言でいうと「データに基づく知的活動や説得を支援するための技術と方法論」です。
+                        </p>
+
+                        <p class="text-gray-200 leading-8">
+                            データ可視化は、課題解決の近道である「課題は何か」、つまり「正しい質問は何か」という仮説構築を後押しします。人間の直感と機械の処理能力を組み合わせ、より効果的で信頼性の高いAIシステムのあり方を実現します。タイムリーな判断が求められる場面でも、複雑な情報を直感的に理解しやすい形式に変換して意思決定を強力に支援します。
+                        </p>
+
+                        <p class="text-gray-200 leading-8">
+                            また、データ可視化はデータを通じて現実のある現象をストーリー化し、効果的に伝えられます。視覚的な表現は理解しやすく、記憶に残りやすいため、説得力のあるコミュニケーションを実現します。さらに、データ可視化を作る人が導く体験とそれを使う人が主体的に探索する体験を組み合わせることで、より深い理解と共感を生み出せます。
+                        </p>
+
+                        <p class="text-gray-200 leading-8">
+                            データ可視化はビジネス、データサイエンス、社会科学、人文科学、自然科学などさまざまな領域で実践されています。同時に、情報デザイン、コンピュータサイエンス、データサイエンス、統計学、記号学、インタラクションデザイン、ストーリーテリングなどいろいろな分野に知見が散在しています。
+                        </p>
+
+                        <p class="text-gray-200 leading-8">
+                            こうした分野・領域を総合的に見分し、データ可視化の歴史的な経緯や研究成果の積み重ねによる知見を参考にしながら、データ分析の結果としてのデータ可視化や、プレゼンテーション術の一部として語られることの多かったデータ可視化について、より多面的・実践的に活用できる基本的な知識体系として執筆しました。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 想定する読者 -->
+                <div>
+                    <h2 class="text-2xl font-bold mb-8 text-white">想定する読者</h2>
+                    <ul class="text-gray-200 leading-8 space-y-4 list-none">
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">データ分析の実務者</span>：データの分析結果を効果的に伝えるスキルと、ステークホルダーの説得を円滑に進める技術が学べます。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">UI・UXデザイナーやエンジニア</span>：ユーザーとのコミュニケーションにおける可視化の選択肢、価値観や考え方の原理原則から実例までが学べます。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">プロダクトマネージャー、プロジェクトマネージャー</span>：事業の進捗度や課題の可視化、ツール選定やダッシュボードの設計に役立つ指針が学べます。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">マーケティングや事業戦略の担当者</span>：市場動向や顧客理解を深め、データに基づくマーケティングや事業の戦略と施策立案のヒントを学べます。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">企業の広報・コミュニケーションの担当者</span>：企業価値を正しく効果的に伝えるチャートの選び方や視覚化のアイデアを学べます。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">報道機関のジャーナリスト</span>：データを活用したストーリーテリングの手法や説得のための表現手法が学べます。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2">・</span>
+                            <span><span class="font-bold">大学生、専門学校生</span>：データ社会における必要不可欠なリテラシーが学べるだけでなく、データに基づく思考法や問題解決力の向上の手助けとなります。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3rd Section: レビュー -->
+    <section class="container mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold mb-8">読者レビュー</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- data_momoさん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">データサイエンティスト視点からも素敵な内容</h3>
+                    <p class="text-sm text-gray-600">data_momoさん（amazon.co.jpレビュー）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    可視化において最もわかりやすい成果物は「洗練された図表」であり、その実装コードが可視化人材にとっての直接的武器であることを踏まえると、一部厳しいレビューが付くのは仕方がないのかもしれません。<br><br>
+                    本書は、個別の武器提供に留まりがちな可視化の現状を克服し、可視化の真のポテンシャルを解放させようとする大変意欲的かつ挑戦的な一冊だと感じました。
+                </p>
+            </div>
+
+            <!-- eTeaさん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">網羅的・体系的で読みやすいデータ可視化の教科書</h3>
+                    <p class="text-sm text-gray-600">eTeaさん（amazon.co.jpレビュー）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    個人的には網羅的かつ読みやすい良書でした。実務・趣味の双方でデータ可視化に触れているのですが、これまで自身の感覚のみを頼りにやってきたので、「何のために可視化するのか」「自分の可視化アプローチは果たして適切なのか」といった基本に立ち返るための学びを随所で得られました。
+                </p>
+            </div>
+
+            <!-- Dayさん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">学問体系としてのデータ可視化</h3>
+                    <p class="text-sm text-gray-600">Dayさん（amazon.co.jpレビュー）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    正直なところ、よくあるデータ可視化でわかりやすく示すという本かと思っていました。しかし出だしから既に様相が違っていて、至ってまともに可視化に関して語られています。さながら学問体系という体裁が整った風格すらありました。ビジュアライゼーションは学問としては不遇な分野ですが、誰もが使うツールの基礎として学んでおくべきかと思います。
+                </p>
+            </div>
+
+            <!-- 大田和 哲也さん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">物事の本質を見極める上で極めて合理的な方法論</h3>
+                    <p class="text-sm text-gray-600">大田和 哲也さん（昭和女子大学現代ビジネス研究所）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    データ可視化の意義が、手の込んだグラフィック手法を駆使して単に分かりやすくする事ではないとアカデミックなロジックで知らしめて頂いている点に感銘しました。この本が、単にデータサイエンティストやビジネスパーソンだけでなく、旧態依然が未だ散見される人文社会科学分野の研究者や学生の間でも広く読まれる事を期待しています。
+                </p>
+            </div>
+
+            <!-- Amazon カスタマーさん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">いい教科書。</h3>
+                    <p class="text-sm text-gray-600">Amazon カスタマーさん（amazon.co.jpレビュー）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    データ可視化BOKって感じです。自分の中のデータ扱う仕事についたら、とりあえずこれ読んだきましょうかって本の仲間入りしました。可視化の本を読み漁る前に出会いたかった良い教科書だと感じました。
+                </p>
+            </div>
+
+            <!-- 南 知宏さん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">コンサルの教科書</h3>
+                    <p class="text-sm text-gray-600">南 知宏さん（amazon.co.jpレビュー）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    長年コンサルとしてデータの可視化は悩みの種でした。本書は可視化の手段を網羅的にカバーしているだけでなく、目的による使い分けの考え方も書かれていて、若手のコンサル向けの教科書として最適なだけでなく、シニアなコンサルやプロマネにも参考になる本だと思います。
+                </p>
+            </div>
+
+            <!-- moさん -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">高校生の息子にも読ませます。</h3>
+                    <p class="text-sm text-gray-600">moさん（機械学習エンジニア）</p>
+                </div>
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    常々、業務でデータ可視化の重要性を痛感することが多々あり、人間の目の優秀さには驚くばかりです。書籍は内容が濃いので、少しずつ読み進めています。個人的には、HowTo本よりも教科書的な物を求めているため、ちょうど良い内容です。高校生の息子にも読ませます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4th Section: 構成 -->
+    <section class="container mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold mb-8">本書の構成</h2>
+        <div class="space-y-8">
+            <img src="assets/pages_1.png" alt="時間（When）のチャート分類" class="w-full rounded-lg shadow-lg">
+            <img src="assets/pages_2.png" alt="場所（Where）のチャート分類" class="w-full rounded-lg shadow-lg">
+            <img src="assets/pages_3.png" alt="関係（To Whom）のチャート分類" class="w-full rounded-lg shadow-lg">
+        </div>
+    </section>
+
+    <!-- 5th Section: 目次 -->
+    <section class="container mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold mb-8">目次</h2>
+        <div class="bg-white p-6 rounded-lg shadow space-y-12">
+            <!-- 基礎編 -->
+            <div>
+                <h3 class="text-xl font-bold mb-4">基礎編</h3>
+                <img src="assets/index_basic.png" alt="基礎編の目次構成" class="w-full max-w-4xl mx-auto mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 max-w-4xl mx-auto">
+                    <!-- 第1章 -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">第1章　なぜデータを可視化するのか</h4>
+                        <ul class="ml-6 space-y-1 text-gray-700">
+                            <li>1-1　データを可視化する理由</li>
+                            <li>1-2　視覚優位な特性と外的表象の力を活かす</li>
+                            <li>1-3　知的活動を支援する</li>
+                            <li>1-4　ストーリーを伝達し説得する</li>
+                        </ul>
+                    </div>
+
+                    <!-- 第2章 -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">第2章　データ可視化とは何か</h4>
+                        <ul class="ml-6 space-y-1 text-gray-700">
+                            <li>2-1　データを視覚的に表現する</li>
+                            <li>2-2　分野を超えた学際性</li>
+                            <li>2-3　チャートには文法がある</li>
+                            <li>2-4　3つの枠組みで可視化表現をとらえる</li>
+                            <li>2-5　可視化を通じたコミュニケーション</li>
+                        </ul>
+                    </div>
+
+                    <!-- 第3章 -->
+                    <div class="md:col-span-2">
+                        <h4 class="text-lg font-bold mb-2">第3章　どんな分野で用いられているか</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>3-1　さまざまな分野で活用されるデータ可視化</li>
+                                <li>3-2　統計学</li>
+                                <li>3-3　機械学習・AI</li>
+                                <li>3-4　経済</li>
+                                <li>3-5　音楽学</li>
+                                <li>3-6　ソーシャルグッド</li>
+                            </ul>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>3-7　データジャーナリズム（社会科学）</li>
+                                <li>3-8　デジタル・ヒューマニティーズ（人文学）</li>
+                                <li>3-9　デジタル・エスノグラフィ（文化人類学）</li>
+                                <li>3-10　スポーツ</li>
+                                <li>3-11　自然科学</li>
+                                <li>3-12　行政</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 第4章 -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">第4章　チャートの文法とは何か</h4>
+                        <ul class="ml-6 space-y-1 text-gray-700">
+                            <li>4-1　チャートの文法とは何か</li>
+                            <li>4-2　ビジュアル変換</li>
+                            <li>4-3　スペース変換</li>
+                            <li>4-4　スケール</li>
+                            <li>4-5　ノンデータ・グラフィック</li>
+                        </ul>
+                    </div>
+
+                    <!-- 第5章 -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">第5章　可視化表現の三層モデルとは何か</h4>
+                        <ul class="ml-6 space-y-1 text-gray-700">
+                            <li>5-1　可視化表現の3層モデルとは何か</li>
+                            <li>5-2　知覚的枠組み</li>
+                            <li>5-3　慣習的枠組み</li>
+                            <li>5-4　知覚と慣習のバランス</li>
+                            <li>5-5　可視化表現のトレードオフ</li>
+                        </ul>
+                    </div>
+
+                    <!-- 第6章 -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">第6章　色はどのように選ぶか</h4>
+                        <ul class="ml-6 space-y-1 text-gray-700">
+                            <li>6-1　なぜ色は重要なのか</li>
+                            <li>6-2　情報デザインの観点</li>
+                            <li>6-3　データの性質による観点</li>
+                            <li>6-4　慣習的な観点</li>
+                            <li>6-5　閲覧者や閲覧環境への配慮</li>
+                            <li>6-6　カラースキームの設計に役立つツール</li>
+                        </ul>
+                    </div>
+
+                    <!-- 第7章 -->
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">第7章　コミュニケーションとしての可視化</h4>
+                        <ul class="ml-6 space-y-1 text-gray-700">
+                            <li>7-1　コミュニケーションの4つの観点</li>
+                            <li>7-2　コミュニケーション・モデルとは何か</li>
+                            <li>7-3　コミュニケーションには「探索」と「説明」がある</li>
+                            <li>7-4　理解のスペクトル</li>
+                            <li>7-5　可視化表現の撮影フレーミング</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 実務編 -->
+            <div class="pt-8">
+                <h3 class="text-xl font-bold mb-4">実務編</h3>
+                <img src="assets/index_advanced.png" alt="実務編の目次構成" class="w-full max-w-4xl mx-auto mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 max-w-4xl mx-auto">
+                    <!-- 第8-14章 -->
+                    <div class="space-y-8">
+                        <!-- 第8章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第8章　ワークフローを理解する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>8-1　課題探索型ワークフロー</li>
+                                <li>8-2　表現伝達型ワークフロー</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第9章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第9章　ゴールを設定する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>9-1　課題探索型におけるゴール</li>
+                                <li>9-2　表現伝達型におけるゴール</li>
+                                <li>9-3　利用シーンとターゲット</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第10章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第10章　タスクを抽象化する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>10-1　分野固有の問いやテーマを抽象化する</li>
+                                <li>10-2　数値（How Many）のタスク</li>
+                                <li>10-3　言葉（What）のタスク</li>
+                                <li>10-4　時間（When）のタスク</li>
+                                <li>10-5　場所（Where）のタスク</li>
+                                <li>10-6　関係（To Whom）のタスク</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第11章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第11章　データの実務知識をおさえる</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>11-1　データの基本概念</li>
+                                <li>11-2　データの種類とファイル形式</li>
+                                <li>11-3　構造化データファイル</li>
+                                <li>11-4　非構造化データ</li>
+                                <li>11-5　ファイルの属性</li>
+                                <li>11-6　メタデータ</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第12章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第12章　データを収集し処理する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>12-1　データ収集と管理</li>
+                                <li>12-2　データの品質と処理</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第13章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第13章　チャートの選び方を知る</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>13-1　タスク別チャートの分類方法</li>
+                                <li>13-2　可視化手法を分類する5W</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第14章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第14章　数値（How Many）を可視化する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>14-1　利用するファイル形式の特徴</li>
+                                <li>14-2　ファイル形式にあったデータ操作の仕方</li>
+                                <li>14-3　チャートを分類する考え方</li>
+                                <li>14-4　数値を示すチャート表現一覧</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 第15-21章 -->
+                    <div class="space-y-8">
+                        <!-- 第15章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第15章　言葉（What）を可視化する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>15-1　利用するファイル形式の特徴</li>
+                                <li>15-2　ファイル形式にあったデータ操作の仕方</li>
+                                <li>15-3　チャートを分類する考え方</li>
+                                <li>15-4　言葉を示すチャート表現一覧</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第16章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第16章　時間（When）を可視化する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>16-1　利用するファイル形式の特徴</li>
+                                <li>16-2　ファイル形式にあったデータ操作の仕方</li>
+                                <li>16-3　チャートを分類する考え方</li>
+                                <li>16-4　時間を示すチャート表現一覧</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第17章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第17章　場所（Where）を可視化する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>17-1　主題地図とは何か</li>
+                                <li>17-2　地理的空間の基礎知識</li>
+                                <li>17-3　従来の静的な地図とは異なる地理空間データ可視化</li>
+                                <li>17-4　利用するファイル形式の特徴</li>
+                                <li>17-5　ファイル形式にあったデータ操作の仕方</li>
+                                <li>17-6　ベースマップ</li>
+                                <li>17-7　チャートを分類する考え方</li>
+                                <li>17-8　場所を示すチャート表現一覧</li>
+                                <li>17-9　作成手順</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第18章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第18章　関係（To Whom）を可視化する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>18-1　利用するファイル形式の特徴</li>
+                                <li>18-2　ファイル形式にあったデータ操作の仕方</li>
+                                <li>18-3　チャートを分類する考え方</li>
+                                <li>18-4　関係を示すチャート表現一覧</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第19章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第19章　インタラクティブに操作する</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>19-1　なぜインタラクティブ技術が重要なのか</li>
+                                <li>19-2　インタラクティブ技術の目的は何か</li>
+                                <li>19-3　インタラクティブなデータ操作</li>
+                                <li>19-4　インタラクティブなビュー操作</li>
+                                <li>19-5　インタラクティブなシステム操作</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第20章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第20章　レイアウトする</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>20-1　レイアウトとは</li>
+                                <li>20-2　情報デザインの知見をおさえる</li>
+                                <li>20-3　読解プロセスの4段階</li>
+                                <li>20-4　チャートの基本配置</li>
+                                <li>20-5　空間利用のバリエーション</li>
+                            </ul>
+                        </div>
+
+                        <!-- 第21章 -->
+                        <div>
+                            <h4 class="text-lg font-bold mb-2">第21章　制作ガイドラインとしての価値観と原理原則</h4>
+                            <ul class="ml-6 space-y-1 text-gray-700">
+                                <li>21-1　データ可視化の5つの価値観</li>
+                                <li>21-2　原理原則1：正確性</li>
+                                <li>21-3　原理原則2：明瞭性</li>
+                                <li>21-4　原理原則3：実用性</li>
+                                <li>21-5　原理原則4：有効性</li>
+                                <li>21-6　原理原則5：芸術性</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 付録 -->
+                <div class="mt-8 pt-8 border-t max-w-4xl mx-auto">
+                    <ul class="ml-6 space-y-1 text-gray-700">
+                        <li>本書に関するお問い合わせ</li>
+                        <li>会員特典データのご案内</li>
+                        <li>著者略歴</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6th Section: 著者紹介 -->
+    <section class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8">著者紹介</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/3">
+                    <img src="assets/profile_yazaki.png" alt="著者写真" class="w-full rounded-lg shadow-lg object-cover">
+                </div>
+                <div class="md:w-2/3">
+                    <h3 class="text-xl font-bold mb-4">矢崎裕一</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        株式会社ビジネス・アーキテクツにてユーザー・インターフェイス・デザイナーおよびアート・ディレクターを7年間経験後、独立。企業や教育機関での講義活動、ウェブサイトVisualizing.JPにおける情報発信、コミュニティDataVisualizationJapanにおけるコミュニティ活動など、データ可視化の実践と普及に関するさまざまな活動をおこなっている。共著書に『RESASの教科書』(日経BP、2016)がある。千葉工業大学デザイン科学修士修了。データ・ビジュアライゼーション・ジャパン発起人/Yahoo!ニュース・エキスパート。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html> 
